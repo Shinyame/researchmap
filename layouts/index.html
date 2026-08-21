@@ -4,7 +4,7 @@
   {{ if site.Data.researchmap }}
   
   <!-- プロフィール -->
-  <section class="rm-profile">
+<section class="rm-profile">
     <div class="rm-profile-inner" style="position: relative; padding: 0 40px;">
       {{ $hasEnProf := or (index site.Data.researchmap.profile.family_name "en") (index site.Data.researchmap.profile.given_name "en") }}
       {{ if $hasEnProf }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
@@ -18,6 +18,10 @@
           {{ range . }}
             {{ $degJa := index .degree "ja" | default (index .degree "en") }}
             {{ $degEn := index .degree "en" | default (index .degree "ja") }}
+            <p style="font-weight: 500; margin: 4px 0; font-size: 16px; color: #222;">
+              <span class="lang-ja">{{ $degJa }}</span>
+              <span class="lang-en">{{ $degEn }}</span>
+            </p>
           {{ end }}
         </div>
       {{ end }}
