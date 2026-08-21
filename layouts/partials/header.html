@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ if .Title }}{{ .Title }} | {{ end }}{{ site.Title }}</title>
+  <style>
+    body { margin: 0; padding: 0; background-color: #fafafa; }
+    .site-header { 
+      background: #1976d2; 
+      color: #fff; 
+      padding: 1rem; 
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .site-header a { color: #fff; text-decoration: none; margin: 0 15px; font-weight: 500; }
+    .site-header a:hover { opacity: 0.8; }
+  </style>
+  <!-- CSSを確実に読み込み、キャッシュを無効化する設定 -->
+  <link rel="stylesheet" href="{{ "css/researchmap.css" | absURL }}?v={{ now.Unix }}">
+</head>
+<body>
+  <header class="site-header">
+    <nav>
+      <a href="https://shinyame.github.io/">Home</a>
+      <a href="https://shinyame.github.io/blog/">Blog</a>
+      <a href="https://researchmap.jp/shinyame" target="_blank" rel="noopener">Researchmap</a>
+    </nav>
+  </header>

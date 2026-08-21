@@ -1,0 +1,414 @@
+{{ partial "header.html" . }}
+
+<main class="rm-container">
+  {{ if hugo.Data.researchmap }}
+  
+  <!-- プロフィール -->
+  <section class="rm-profile">
+    <div class="rm-list-item" style="border:none; padding-bottom:0;">
+      {{ $hasEnProf := or (index hugo.Data.researchmap.profile.family_name "en") (index hugo.Data.researchmap.profile.given_name "en") }}
+      {{ if $hasEnProf }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+      <h1 class="rm-name">
+        <span class="lang-ja">{{ hugo.Data.researchmap.profile.family_name.ja }} {{ hugo.Data.researchmap.profile.given_name.ja }}</span>
+        <span class="lang-en">{{ hugo.Data.researchmap.profile.given_name.en }} {{ hugo.Data.researchmap.profile.family_name.en }}</span>
+      </h1>
+  {{ with hugo.Data.researchmap.profile.degrees }}
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .degree }}{{ if index .degree "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .degree_institution }}{{ if index .degree_institution "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          {{ $degJa := index .degree "ja" | default (index .degree "en") }}
+          {{ $degEn := index .degree "en" | default (index .degree "ja") }}
+          <strong><span class="lang-ja">{{ $degJa }}</span><span class="lang-en">{{ $degEn }}</span></strong>          
+          {{ if .degree_institution }}
+            {{ $instJa := index .degree_institution "ja" | default (index .degree_institution "en") }}
+            {{ $instEn := index .degree_institution "en" | default (index .degree_institution "ja") }}
+          {{ end }}
+      {{ end }}
+
+  {{ end }}
+
+      <div class="rm-affiliations">
+        {{ range hugo.Data.researchmap.profile.affiliations }}
+          {{ $affJa := index .affiliation "ja" | default (index .affiliation "en") }}
+          {{ $affEn := index .affiliation "en" | default (index .affiliation "ja") }}
+          <p><span class="lang-ja">{{ $affJa }}</span><span class="lang-en">{{ $affEn }}</span>
+            {{ if .section }}
+              {{ $secJa := index .section "ja" | default (index .section "en") }}
+              {{ $secEn := index .section "en" | default (index .section "ja") }}
+              <span class="lang-ja">{{ $secJa }}</span><span class="lang-en">{{ $secEn }}</span>
+            {{ end }}
+            {{ if .job }}
+              {{ $jobJa := index .job "ja" | default (index .job "en") }}
+              {{ $jobEn := index .job "en" | default (index .job "ja") }}
+              (<span class="lang-ja">{{ $jobJa }}</span><span class="lang-en">{{ $jobEn }}</span>)
+            {{ end }}
+          </p>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. 研究キーワード -->
+  {{ with hugo.Data.researchmap.research_interests }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">研究キーワード</h2>
+    <div class="rm-chips">
+      {{ range . }}
+        {{ $kJa := index .keyword "ja" | default (index .keyword "en") }}
+        {{ $kEn := index .keyword "en" | default (index .keyword "ja") }}
+        <span class="rm-chip">
+          <span class="lang-ja">{{ $kJa }}</span><span class="lang-en">{{ $kEn }}</span>
+        </span>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- 2. 研究分野 -->
+  {{ with hugo.Data.researchmap.research_areas }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">研究分野</h2>
+    <ul class="rm-simple-list" id="list-areas">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .discipline }}{{ if index .discipline "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .research_field }}{{ if index .research_field "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          {{ $dJa := index .discipline "ja" | default (index .discipline "en") }}
+          {{ $dEn := index .discipline "en" | default (index .discipline "ja") }}
+          {{ $fJa := index .research_field "ja" | default (index .research_field "en") }}
+          {{ $fEn := index .research_field "en" | default (index .research_field "ja") }}
+          <span class="lang-ja">{{ $dJa }} - {{ $fJa }}</span>
+          <span class="lang-en">{{ $dEn }} - {{ $fEn }}</span>
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-areas', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 3. 所属学協会 -->
+  {{ with hugo.Data.researchmap.association_memberships }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">所属学協会</h2>
+    <ul class="rm-simple-list" id="list-associations">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .academic_society_name }}{{ if index .academic_society_name "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          {{ $aJa := index .academic_society_name "ja" | default (index .academic_society_name "en") }}
+          {{ $aEn := index .academic_society_name "en" | default (index .academic_society_name "ja") }}
+          <span class="lang-ja">{{ $aJa }}</span><span class="lang-en">{{ $aEn }}</span>
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-associations', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 4. 経歴 -->
+  {{ with hugo.Data.researchmap.research_experience }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">経歴</h2>
+    <ul class="rm-timeline" id="list-experience">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .affiliation }}{{ if index .affiliation "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .section }}{{ if index .section "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .job }}{{ if index .job "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_date }} - {{ if eq .to_date "9999" }}現在{{ else }}{{ .to_date }}{{ end }}</span>
+          {{ $affJa := index .affiliation "ja" | default (index .affiliation "en") }}
+          {{ $affEn := index .affiliation "en" | default (index .affiliation "ja") }}
+          <strong><span class="lang-ja">{{ $affJa }}</span><span class="lang-en">{{ $affEn }}</span></strong>
+          
+          {{ if .section }}
+            {{ $secJa := index .section "ja" | default (index .section "en") }}
+            {{ $secEn := index .section "en" | default (index .section "ja") }}
+            - <span class="lang-ja">{{ $secJa }}</span><span class="lang-en">{{ $secEn }}</span>
+          {{ end }}
+          {{ if .job }}
+            {{ $jobJa := index .job "ja" | default (index .job "en") }}
+            {{ $jobEn := index .job "en" | default (index .job "ja") }}
+            (<span class="lang-ja">{{ $jobJa }}</span><span class="lang-en">{{ $jobEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-experience', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 5. 学歴 -->
+  {{ with hugo.Data.researchmap.education }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">学歴</h2>
+    <ul class="rm-timeline" id="list-education">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .affiliation }}{{ if index .affiliation "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .department }}{{ if index .department "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .course }}{{ if index .course "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_date }} - {{ if eq .to_date "9999" }}現在{{ else }}{{ .to_date }}{{ end }}</span>
+          {{ $affJa := index .affiliation "ja" | default (index .affiliation "en") }}
+          {{ $affEn := index .affiliation "en" | default (index .affiliation "ja") }}
+          <strong><span class="lang-ja">{{ $affJa }}</span><span class="lang-en">{{ $affEn }}</span></strong>
+          
+          {{ if .department }}
+            {{ $depJa := index .department "ja" | default (index .department "en") }}
+            {{ $depEn := index .department "en" | default (index .department "ja") }}
+            <span class="lang-ja">{{ $depJa }}</span><span class="lang-en">{{ $depEn }}</span>
+          {{ end }}
+          {{ if .course }}
+            {{ $couJa := index .course "ja" | default (index .course "en") }}
+            {{ $couEn := index .course "en" | default (index .course "ja") }}
+            <span class="lang-ja">{{ $couJa }}</span><span class="lang-en">{{ $couEn }}</span>
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-education', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 6. 学位 -->
+  {{ with hugo.Data.researchmap.profile.degrees }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">学位</h2>
+    <ul class="rm-timeline" id="list-degrees">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .degree }}{{ if index .degree "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .degree_institution }}{{ if index .degree_institution "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .degree_date }}</span>
+          {{ $degJa := index .degree "ja" | default (index .degree "en") }}
+          {{ $degEn := index .degree "en" | default (index .degree "ja") }}
+          <strong><span class="lang-ja">{{ $degJa }}</span><span class="lang-en">{{ $degEn }}</span></strong>
+          
+          {{ if .degree_institution }}
+            {{ $instJa := index .degree_institution "ja" | default (index .degree_institution "en") }}
+            {{ $instEn := index .degree_institution "en" | default (index .degree_institution "ja") }}
+            (<span class="lang-ja">{{ $instJa }}</span><span class="lang-en">{{ $instEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-degrees', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 7. 委員歴 -->
+  {{ with hugo.Data.researchmap.committee_memberships }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">委員歴</h2>
+    <ul class="rm-timeline" id="list-committee">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .committee_name }}{{ if index .committee_name "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .association }}{{ if index .association "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_date }} - {{ if eq .to_date "9999" }}現在{{ else }}{{ .to_date }}{{ end }}</span>
+          {{ $comJa := index .committee_name "ja" | default (index .committee_name "en") }}
+          {{ $comEn := index .committee_name "en" | default (index .committee_name "ja") }}
+          <strong><span class="lang-ja">{{ $comJa }}</span><span class="lang-en">{{ $comEn }}</span></strong>
+          
+          {{ if .association }}
+            {{ $assJa := index .association "ja" | default (index .association "en") }}
+            {{ $assEn := index .association "en" | default (index .association "ja") }}
+            (<span class="lang-ja">{{ $assJa }}</span><span class="lang-en">{{ $assEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-committee', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 8. 論文 -->
+  {{ with hugo.Data.researchmap.published_papers }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">論文</h2>
+    <div id="list-papers">
+      {{ range $idx, $item := . }}
+        <div class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">{{ partial "paper_item.html" . }}</div>
+      {{ end }}
+    </div>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-papers', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 9. MISC -->
+  {{ with hugo.Data.researchmap.misc }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">MISC</h2>
+    <div id="list-misc">
+      {{ range $idx, $item := . }}
+        <div class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">{{ partial "paper_item.html" . }}</div>
+      {{ end }}
+    </div>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-misc', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 10. 社会貢献活動 -->
+  {{ with hugo.Data.researchmap.social_contribution }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">社会貢献活動</h2>
+    <ul class="rm-timeline" id="list-social">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .social_contribution_title }}{{ if index .social_contribution_title "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .promoter }}{{ if index .promoter "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_event_date }}</span>
+          {{ $socJa := index .social_contribution_title "ja" | default (index .social_contribution_title "en") }}
+          {{ $socEn := index .social_contribution_title "en" | default (index .social_contribution_title "ja") }}
+          <strong><span class="lang-ja">{{ $socJa }}</span><span class="lang-en">{{ $socEn }}</span></strong>
+          
+          {{ if .promoter }}
+            {{ $proJa := index .promoter "ja" | default (index .promoter "en") }}
+            {{ $proEn := index .promoter "en" | default (index .promoter "ja") }}
+            - <span class="lang-ja">{{ $proJa }}</span><span class="lang-en">{{ $proEn }}</span>
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-social', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 11. 受賞 -->
+  {{ with hugo.Data.researchmap.awards }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">受賞</h2>
+    <ul class="rm-timeline" id="list-awards">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .award_name }}{{ if index .award_name "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .award_title }}{{ if index .award_title "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .association }}{{ if index .association "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .award_date }}</span>
+          {{ $awdJa := index .award_name "ja" | default (index .award_name "en") }}
+          {{ $awdEn := index .award_name "en" | default (index .award_name "ja") }}
+          <strong><span class="lang-ja">{{ $awdJa }}</span><span class="lang-en">{{ $awdEn }}</span></strong>
+          
+          {{ if .award_title }}
+            {{ $awtJa := index .award_title "ja" | default (index .award_title "en") }}
+            {{ $awtEn := index .award_title "en" | default (index .award_title "ja") }}
+            - <span class="lang-ja">{{ $awtJa }}</span><span class="lang-en">{{ $awtEn }}</span>
+          {{ end }}
+          {{ if .association }}
+            {{ $asaJa := index .association "ja" | default (index .association "en") }}
+            {{ $asaEn := index .association "en" | default (index .association "ja") }}
+            (<span class="lang-ja">{{ $asaJa }}</span><span class="lang-en">{{ $asaEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-awards', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 12. 研究課題 -->
+  {{ with hugo.Data.researchmap.research_projects }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">共同研究・競争的資金等の研究課題</h2>
+    <ul class="rm-timeline" id="list-projects">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .research_project_title }}{{ if index .research_project_title "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .offer_organization }}{{ if index .offer_organization "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_date }} - {{ if eq .to_date "9999" }}現在{{ else }}{{ .to_date }}{{ end }}</span>
+          {{ $prjJa := index .research_project_title "ja" | default (index .research_project_title "en") }}
+          {{ $prjEn := index .research_project_title "en" | default (index .research_project_title "ja") }}
+          <strong><span class="lang-ja">{{ $prjJa }}</span><span class="lang-en">{{ $prjEn }}</span></strong>
+          
+          {{ if .offer_organization }}
+            {{ $offJa := index .offer_organization "ja" | default (index .offer_organization "en") }}
+            {{ $offEn := index .offer_organization "en" | default (index .offer_organization "ja") }}
+            (<span class="lang-ja">{{ $offJa }}</span><span class="lang-en">{{ $offEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-projects', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  <!-- 13. 学術貢献活動 -->
+  {{ with hugo.Data.researchmap.academic_contribution }}
+  <section class="rm-section">
+    <h2 class="rm-section-title">学術貢献活動</h2>
+    <ul class="rm-timeline" id="list-academic">
+      {{ range $idx, $item := . }}
+        {{ $hasEn := false }}
+        {{ if .academic_contribution_title }}{{ if index .academic_contribution_title "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        {{ if .promoter }}{{ if index .promoter "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+        <li class="rm-list-item {{ if ge $idx 5 }}hidden{{ end }}">
+          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+          <span class="rm-date">{{ .from_event_date }} - {{ if eq .to_date "9999" }}現在{{ else }}{{ .to_date }}{{ end }}</span>
+          {{ $acaJa := index .academic_contribution_title "ja" | default (index .academic_contribution_title "en") }}
+          {{ $acaEn := index .academic_contribution_title "en" | default (index .academic_contribution_title "ja") }}
+          <strong><span class="lang-ja">{{ $acaJa }}</span><span class="lang-en">{{ $acaEn }}</span></strong>
+          
+          {{ if .promoter }}
+            {{ $proJa := index .promoter "ja" | default (index .promoter "en") }}
+            {{ $proEn := index .promoter "en" | default (index .promoter "ja") }}
+            (<span class="lang-ja">{{ $proJa }}</span><span class="lang-en">{{ $proEn }}</span>)
+          {{ end }}
+        </li>
+      {{ end }}
+    </ul>
+    {{ if gt (len .) 5 }}<button class="rm-show-more" onclick="showMore('list-academic', this)">すべてを表示 ({{ len . }}件)</button>{{ end }}
+  </section>
+  {{ end }}
+
+  {{ else }}
+  <section class="rm-section">
+    <p style="text-align:center;">データがありません。<code>raw_data/researchmap.jsonl</code> を配置し、ビルドスクリプトを実行してください。</p>
+  </section>
+  {{ end }}
+</main>
+
+<script>
+  function showMore(listId, btnElement) {
+    const list = document.getElementById(listId);
+    if (!list) return;
+    const hiddenItems = list.querySelectorAll('.hidden');
+    hiddenItems.forEach(item => {
+      item.classList.remove('hidden');
+    });
+    btnElement.style.display = 'none';
+  }
+
+  // 個別のJA/EN切り替え機能
+  function toggleItemLang(btn) {
+    const item = btn.closest('.rm-list-item');
+    if (!item) return;
+    
+    if (item.classList.contains('show-en')) {
+      item.classList.remove('show-en');
+      btn.textContent = 'EN';
+    } else {
+      item.classList.add('show-en');
+      btn.textContent = 'JA';
+    }
+  }
+</script>
+
+{{ partial "footer.html" . }}

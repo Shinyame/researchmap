@@ -1,0 +1,88 @@
+{{ $titleJa := "" }}{{ $titleEn := "" }}
+{{ $hasEn := false }}
+
+{{ if .paper_title }}
+  {{ $titleJa = index .paper_title "ja" | default (index .paper_title "en") }}
+  {{ $titleEn = index .paper_title "en" | default (index .paper_title "ja") }}
+  {{ if index .paper_title "en" }}{{ $hasEn = true }}{{ end }}
+{{ else if .presentation_titles }}
+  {{ $titleJa = index .presentation_titles "ja" | default (index .presentation_titles "en") }}
+  {{ $titleEn = index .presentation_titles "en" | default (index .presentation_titles "ja") }}
+  {{ if index .presentation_titles "en" }}{{ $hasEn = true }}{{ end }}
+{{ else if .book_titles }}
+  {{ $titleJa = index .book_titles "ja" | default (index .book_titles "en") }}
+  {{ $titleEn = index .book_titles "en" | default (index .book_titles "ja") }}
+  {{ if index .book_titles "en" }}{{ $hasEn = true }}{{ end }}
+{{ end }}
+
+{{ if .authors }}{{ if index .authors "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+{{ if .description }}{{ if index .description "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+{{ if .publication_name }}{{ if index .publication_name "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+{{ if .event_name }}{{ if index .event_name "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+
+{{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+
+{{ $link := "" }}
+{{ if .identifiers }}
+  {{ if .identifiers.doi }}{{ $link = printf "https://doi.org/%s" (index .identifiers.doi 0) }}{{ end }}
+  {{ if and (eq $link "") .identifiers.identifiers }}
+    {{ range .identifiers.identifiers }}
+      {{ if eq .identifier_type "DOI" }}{{ $link = printf "https://doi.org/%s" .identifier }}{{ end }}
+      {{ if and (eq $link "") (eq .identifier_type "URL") }}{{ $link = .identifier }}{{ end }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+{{ if and (eq $link "") .see_also }}
+  {{ range .see_also }}{{ if eq .label "url" }}{{ $link = index . "@id" }}{{ end }}{{ end }}
+{{ end }}
+
+<h3 class="rm-title">
+  {{ if $link }}<a href="{{ $link }}" target="_blank" rel="noopener">
+    <span class="lang-ja">{{ $titleJa }}</span><span class="lang-en">{{ $titleEn }}</span>
+  </a>{{ else }}
+    <span class="lang-ja">{{ $titleJa }}</span><span class="lang-en">{{ $titleEn }}</span>
+  {{ end }}
+</h3>
+
+{{ if .authors }}
+<div class="rm-authors">
+  {{ $authorsJa := index .authors "ja" | default (index .authors "en") }}
+  {{ $authorsEn := index .authors "en" | default (index .authors "ja") }}
+  <span class="lang-ja">{{ range $idx, $author := $authorsJa }}{{ if $idx }}, {{ end }}{{ $author.name }}{{ end }}</span>
+  <span class="lang-en">{{ range $idx, $author := $authorsEn }}{{ if $idx }}, {{ end }}{{ $author.name }}{{ end }}</span>
+</div>
+{{ end }}
+
+<div class="rm-metadata">
+  {{ $journalJa := "" }}{{ $journalEn := "" }}
+  {{ if .publication_name }}
+    {{ $journalJa = index .publication_name "ja" | default (index .publication_name "en") }}
+    {{ $journalEn = index .publication_name "en" | default (index .publication_name "ja") }}
+  {{ else if .event_name }}
+    {{ $journalJa = index .event_name "ja" | default (index .event_name "en") }}
+    {{ $journalEn = index .event_name "en" | default (index .event_name "ja") }}
+  {{ end }}
+
+  {{ if or $journalJa $journalEn }}
+    <span class="rm-journal">
+      <span class="lang-ja">{{ $journalJa }}</span><span class="lang-en">{{ $journalEn }}</span>
+    </span>
+  {{ end }}
+
+  {{ if .volume }} {{ .volume }}{{ end }}{{ if .number }}({{ .number }}){{ end }}
+  {{ if .starting_page }} {{ .starting_page }}{{ if .ending_page }}-{{ .ending_page }}{{ end }}{{ end }}
+  
+  {{ $date := .publication_date | default .presentation_date }}
+  {{ if $date }} <span class="rm-date">({{ $date }})</span>{{ end }}
+</div>
+
+{{ if .description }}
+  {{ $descJa := index .description "ja" | default (index .description "en") }}
+  {{ $descEn := index .description "en" | default (index .description "ja") }}
+  {{ if or $descJa $descEn }}
+    <div class="rm-summary">
+      <p class="lang-ja">{{ $descJa }}</p>
+      <p class="lang-en">{{ $descEn }}</p>
+    </div>
+  {{ end }}
+{{ end }}

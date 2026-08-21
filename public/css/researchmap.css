@@ -1,0 +1,208 @@
+/* 全体コンテナ: ブログのような中央配置 */
+.rm-container {
+  max-width: 800px; /* 読みやすい横幅 */
+  margin: 0 auto;   /* 左右中央寄せ */
+  padding: 60px 20px;
+  color: #333;
+  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  line-height: 1.8;
+}
+
+/* プロフィール (完全中央揃え) */
+.rm-profile {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.rm-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  letter-spacing: 0.05em;
+}
+.rm-name-en {
+  font-size: 16px;
+  color: #777;
+  margin-left: 8px;
+  font-weight: normal;
+}
+.rm-affiliations p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 15px;
+}
+
+/* セクション全体 */
+.rm-section {
+  margin-bottom: 50px;
+}
+
+/* セクション見出し (中央揃え＋下線アクセント) */
+.rm-section-title {
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center; /* 見出しを中央揃え */
+  margin-bottom: 30px;
+  color: #111;
+  position: relative;
+  padding-bottom: 15px;
+}
+.rm-section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 2px;
+  background-color: #194485; /* アクセントカラー */
+}
+
+/* キーワードのチップ (中央揃え) */
+.rm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center; /* チップを中央に寄せる */
+}
+.rm-chip {
+  background: #f0f2f5;
+  color: #444;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+/* リスト要素 (コンテナ自体は中央だが、テキストは読みやすく左揃え) */
+.rm-simple-list, .rm-timeline, #list-papers, #list-misc {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left; 
+}
+
+/* リストアイテムの区切り */
+.rm-list-item {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed #eaeaea;
+}
+.rm-list-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* 日付 */
+.rm-date {
+  display: inline-block;
+  min-width: 140px;
+  color: #777;
+  font-family: monospace;
+  font-size: 15px;
+}
+
+/* 論文・MISCのテキストスタイル */
+.rm-title {
+  font-size: 17px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+  line-height: 1.5;
+}
+.rm-title a {
+  color: #194485;
+  text-decoration: none;
+}
+.rm-title a:hover {
+  text-decoration: underline;
+}
+.rm-authors {
+  font-size: 14px;
+  color: #555;
+}
+.rm-metadata {
+  font-size: 13px;
+  color: #777;
+  margin-top: 4px;
+}
+.rm-journal {
+  font-weight: bold;
+  margin-right: 8px;
+  color: #444;
+}
+.rm-summary {
+  font-size: 13px;
+  color: #555;
+  background-color: #fafafa;
+  padding: 12px 16px;
+  margin-top: 12px;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+}
+.rm-summary p { margin: 0; }
+
+/* すべてを表示ボタン (中央揃え) */
+.rm-show-more {
+  display: block;
+  width: 200px;
+  margin: 30px auto 0; /* ボタンを中央寄せ */
+  background: #fff;
+  color: #194485;
+  border: 1px solid #194485;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.rm-show-more:hover {
+  background: #194485;
+  color: #fff;
+}
+
+/* JavaScript開閉用 */
+.hidden {
+  display: none !important;
+}
+
+/* =========================================
+   JA/EN Toggle Styles
+   ========================================= */
+
+/* 各アイテムの相対配置と、ボタン用の余白 */
+.rm-list-item {
+  position: relative;
+  padding-right: 40px; /* 右上のボタンとテキストが被らないように余白を確保 */
+}
+
+/* トグルボタンのスタイル */
+.rm-toggle-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.2);
+  color: #666;
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.2s ease;
+  font-family: monospace;
+}
+.rm-toggle-btn:hover {
+  background: rgba(0,0,0,0.05);
+  color: #333;
+}
+
+/* 言語切り替えロジック */
+.lang-en { display: none; }
+
+/* show-en クラスが付与された時の表示切り替え */
+.show-en .lang-ja { display: none; }
+.show-en .lang-en { display: inline; }
+
+/* 概要などのブロック要素 (pタグ) 用 */
+p.lang-en { display: none; }
+.show-en p.lang-en { display: block; }
