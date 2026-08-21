@@ -1,6 +1,6 @@
-# Researchmap Mirror for Hugo
+# researchmap Mirror for Hugo
 
-独自のGitHub PagesにResearchmap風の業績一覧等をミラーサイトとして構築するプロジェクトです。
+独自のGitHub Pagesにresearchmap風の業績一覧等をミラーサイトとして構築するプロジェクトです。
 
 開発者自身の経験談とスパム防止を踏まえ、連絡先情報を除外するサニタイズ処理を行い、ミラーサイトを構築します。
 サニタイズ処理は、事前に自前の「JSONL Sanitizer」アプリで行います。
@@ -13,7 +13,7 @@
 ## 運用手順（デプロイの流れ）
 
 1. **データのエクスポート**
-   Researchmap本家から業績データ（初期項目のまま）を `.jsonl` 形式でエクスポートします。
+   researchmap本家から業績データ（初期項目のまま）を `.jsonl` 形式でエクスポートします。
 2. **データのサニタイズ (ローカル処理)**
    別途用意した[「JSONL Sanitizer」アプリ](https://shinyame.github.io/app/researchmap-json)でエクスポートしたファイルを選択します。
    `contact_point` を削除した安全な `researchmap.jsonl` がダウンロードされます。
