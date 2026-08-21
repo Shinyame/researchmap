@@ -1,4 +1,4 @@
 baseURL = "https://shinyame.github.io/researchmap/"
 locale = "ja-jp"
-title = "Researchmap"
+title = "researchmap mirror"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
