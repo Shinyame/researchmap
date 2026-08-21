@@ -1,36 +1,20 @@
 {{ partial "header.html" . }}
 
 <main class="rm-container">
-  {{ if hugo.Data.researchmap }}
+  {{ if site.Data.researchmap }}
   
   <!-- プロフィール -->
   <section class="rm-profile">
-    <div class="rm-list-item" style="border:none; padding-bottom:0;">
-      {{ $hasEnProf := or (index hugo.Data.researchmap.profile.family_name "en") (index hugo.Data.researchmap.profile.given_name "en") }}
+    <div class="rm-profile-inner" style="position: relative; padding: 0 40px;">
+      {{ $hasEnProf := or (index site.Data.researchmap.profile.family_name "en") (index site.Data.researchmap.profile.given_name "en") }}
       {{ if $hasEnProf }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
       <h1 class="rm-name">
-        <span class="lang-ja">{{ hugo.Data.researchmap.profile.family_name.ja }} {{ hugo.Data.researchmap.profile.given_name.ja }}</span>
-        <span class="lang-en">{{ hugo.Data.researchmap.profile.given_name.en }} {{ hugo.Data.researchmap.profile.family_name.en }}</span>
+        <span class="lang-ja">{{ site.Data.researchmap.profile.family_name.ja }} {{ site.Data.researchmap.profile.given_name.ja }}</span>
+        <span class="lang-en">{{ site.Data.researchmap.profile.given_name.en }} {{ site.Data.researchmap.profile.family_name.en }}</span>
       </h1>
 
-      {{ with hugo.Data.researchmap.profile.degrees }}
-        {{ range $idx, $item := . }}
-          {{ $hasEn := false }}
-          {{ if .degree }}{{ if index .degree "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
-          {{ if .degree_institution }}{{ if index .degree_institution "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
-            {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
-            {{ $degJa := index .degree "ja" | default (index .degree "en") }}
-            {{ $degEn := index .degree "en" | default (index .degree "ja") }}
-            <strong><span class="lang-ja">{{ $degJa }}</span><span class="lang-en">{{ $degEn }}</span></strong>          
-            {{ if .degree_institution }}
-              {{ $instJa := index .degree_institution "ja" | default (index .degree_institution "en") }}
-              {{ $instEn := index .degree_institution "en" | default (index .degree_institution "ja") }}
-            {{ end }}
-        {{ end }}
-      {{ end }}
-
       <div class="rm-affiliations">
-        {{ range hugo.Data.researchmap.profile.affiliations }}
+        {{ range site.Data.researchmap.profile.affiliations }}
           {{ $affJa := index .affiliation "ja" | default (index .affiliation "en") }}
           {{ $affEn := index .affiliation "en" | default (index .affiliation "ja") }}
           <p><span class="lang-ja">{{ $affJa }}</span><span class="lang-en">{{ $affEn }}</span>
@@ -51,7 +35,7 @@
   </section>
 
   <!-- 1. 研究キーワード -->
-  {{ with hugo.Data.researchmap.research_interests }}
+  {{ with site.Data.researchmap.research_interests }}
   <section class="rm-section">
     <h2 class="rm-section-title">研究キーワード</h2>
     <div class="rm-chips">
@@ -67,7 +51,7 @@
   {{ end }}
 
   <!-- 2. 研究分野 -->
-  {{ with hugo.Data.researchmap.research_areas }}
+  {{ with site.Data.researchmap.research_areas }}
   <section class="rm-section">
     <h2 class="rm-section-title">研究分野</h2>
     <ul class="rm-simple-list" id="list-areas">
@@ -91,7 +75,7 @@
   {{ end }}
 
   <!-- 3. 所属学協会 -->
-  {{ with hugo.Data.researchmap.association_memberships }}
+  {{ with site.Data.researchmap.association_memberships }}
   <section class="rm-section">
     <h2 class="rm-section-title">所属学協会</h2>
     <ul class="rm-simple-list" id="list-associations">
@@ -111,7 +95,7 @@
   {{ end }}
 
   <!-- 4. 経歴 -->
-  {{ with hugo.Data.researchmap.research_experience }}
+  {{ with site.Data.researchmap.research_experience }}
   <section class="rm-section">
     <h2 class="rm-section-title">経歴</h2>
     <ul class="rm-timeline" id="list-experience">
@@ -145,7 +129,7 @@
   {{ end }}
 
   <!-- 5. 学歴 -->
-  {{ with hugo.Data.researchmap.education }}
+  {{ with site.Data.researchmap.education }}
   <section class="rm-section">
     <h2 class="rm-section-title">学歴</h2>
     <ul class="rm-timeline" id="list-education">
@@ -179,7 +163,7 @@
   {{ end }}
 
   <!-- 6. 学位 -->
-  {{ with hugo.Data.researchmap.profile.degrees }}
+  {{ with site.Data.researchmap.profile.degrees }}
   <section class="rm-section">
     <h2 class="rm-section-title">学位</h2>
     <ul class="rm-timeline" id="list-degrees">
@@ -207,7 +191,7 @@
   {{ end }}
 
   <!-- 7. 委員歴 -->
-  {{ with hugo.Data.researchmap.committee_memberships }}
+  {{ with site.Data.researchmap.committee_memberships }}
   <section class="rm-section">
     <h2 class="rm-section-title">委員歴</h2>
     <ul class="rm-timeline" id="list-committee">
@@ -235,7 +219,7 @@
   {{ end }}
 
   <!-- 8. 論文 -->
-  {{ with hugo.Data.researchmap.published_papers }}
+  {{ with site.Data.researchmap.published_papers }}
   <section class="rm-section">
     <h2 class="rm-section-title">論文</h2>
     <div id="list-papers">
@@ -248,7 +232,7 @@
   {{ end }}
 
   <!-- 9. MISC -->
-  {{ with hugo.Data.researchmap.misc }}
+  {{ with site.Data.researchmap.misc }}
   <section class="rm-section">
     <h2 class="rm-section-title">MISC</h2>
     <div id="list-misc">
@@ -261,7 +245,7 @@
   {{ end }}
 
   <!-- 10. 社会貢献活動 -->
-  {{ with hugo.Data.researchmap.social_contribution }}
+  {{ with site.Data.researchmap.social_contribution }}
   <section class="rm-section">
     <h2 class="rm-section-title">社会貢献活動</h2>
     <ul class="rm-timeline" id="list-social">
@@ -289,7 +273,7 @@
   {{ end }}
 
   <!-- 11. 受賞 -->
-  {{ with hugo.Data.researchmap.awards }}
+  {{ with site.Data.researchmap.awards }}
   <section class="rm-section">
     <h2 class="rm-section-title">受賞</h2>
     <ul class="rm-timeline" id="list-awards">
@@ -323,7 +307,7 @@
   {{ end }}
 
   <!-- 12. 研究課題 -->
-  {{ with hugo.Data.researchmap.research_projects }}
+  {{ with site.Data.researchmap.research_projects }}
   <section class="rm-section">
     <h2 class="rm-section-title">共同研究・競争的資金等の研究課題</h2>
     <ul class="rm-timeline" id="list-projects">
@@ -351,7 +335,7 @@
   {{ end }}
 
   <!-- 13. 学術貢献活動 -->
-  {{ with hugo.Data.researchmap.academic_contribution }}
+  {{ with site.Data.researchmap.academic_contribution }}
   <section class="rm-section">
     <h2 class="rm-section-title">学術貢献活動</h2>
     <ul class="rm-timeline" id="list-academic">
@@ -396,8 +380,9 @@
     btnElement.style.display = 'none';
   }
 
+  // クラス .rm-profile-inner を切り替え対象に追加
   function toggleItemLang(btn) {
-    const item = btn.closest('.rm-list-item');
+    const item = btn.closest('.rm-list-item') || btn.closest('.rm-profile-inner');
     if (!item) return;
     
     if (item.classList.contains('show-en')) {
