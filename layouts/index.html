@@ -13,6 +13,19 @@
         <span class="lang-en">{{ site.Data.researchmap.profile.given_name.en }} {{ site.Data.researchmap.profile.family_name.en }}</span>
       </h1>
 
+      {{ with site.Data.researchmap.profile.degrees }}
+        <div class="rm-degrees" style="margin-bottom: 12px;">
+          {{ range . }}
+            {{ $degJa := index .degree "ja" | default (index .degree "en") }}
+            {{ $degEn := index .degree "en" | default (index .degree "ja") }}
+            <p style="font-weight: 500; margin: 4px 0; font-size: 16px; color: #222;">
+              <span class="lang-ja">{{ $degJa }}{{ if .degree_institution }} ({{ .degree_date }} {{ index .degree_institution "ja" | default (index .degree_institution "en") }}){{ end }}</span>
+              <span class="lang-en">{{ $degEn }}{{ if .degree_institution }} ({{ .degree_date }} {{ index .degree_institution "en" | default (index .degree_institution "ja") }}){{ end }}</span>
+            </p>
+          {{ end }}
+        </div>
+      {{ end }}
+      
       <div class="rm-affiliations">
         {{ range site.Data.researchmap.profile.affiliations }}
           {{ $affJa := index .affiliation "ja" | default (index .affiliation "en") }}
