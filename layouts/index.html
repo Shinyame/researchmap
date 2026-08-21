@@ -12,22 +12,22 @@
         <span class="lang-ja">{{ hugo.Data.researchmap.profile.family_name.ja }} {{ hugo.Data.researchmap.profile.given_name.ja }}</span>
         <span class="lang-en">{{ hugo.Data.researchmap.profile.given_name.en }} {{ hugo.Data.researchmap.profile.family_name.en }}</span>
       </h1>
-  {{ with hugo.Data.researchmap.profile.degrees }}
-      {{ range $idx, $item := . }}
-        {{ $hasEn := false }}
-        {{ if .degree }}{{ if index .degree "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
-        {{ if .degree_institution }}{{ if index .degree_institution "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
-          {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
-          {{ $degJa := index .degree "ja" | default (index .degree "en") }}
-          {{ $degEn := index .degree "en" | default (index .degree "ja") }}
-          <strong><span class="lang-ja">{{ $degJa }}</span><span class="lang-en">{{ $degEn }}</span></strong>          
-          {{ if .degree_institution }}
-            {{ $instJa := index .degree_institution "ja" | default (index .degree_institution "en") }}
-            {{ $instEn := index .degree_institution "en" | default (index .degree_institution "ja") }}
-          {{ end }}
-      {{ end }}
 
-  {{ end }}
+      {{ with hugo.Data.researchmap.profile.degrees }}
+        {{ range $idx, $item := . }}
+          {{ $hasEn := false }}
+          {{ if .degree }}{{ if index .degree "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+          {{ if .degree_institution }}{{ if index .degree_institution "en" }}{{ $hasEn = true }}{{ end }}{{ end }}
+            {{ if $hasEn }}<button class="rm-toggle-btn" onclick="toggleItemLang(this)">EN</button>{{ end }}
+            {{ $degJa := index .degree "ja" | default (index .degree "en") }}
+            {{ $degEn := index .degree "en" | default (index .degree "ja") }}
+            <strong><span class="lang-ja">{{ $degJa }}</span><span class="lang-en">{{ $degEn }}</span></strong>          
+            {{ if .degree_institution }}
+              {{ $instJa := index .degree_institution "ja" | default (index .degree_institution "en") }}
+              {{ $instEn := index .degree_institution "en" | default (index .degree_institution "ja") }}
+            {{ end }}
+        {{ end }}
+      {{ end }}
 
       <div class="rm-affiliations">
         {{ range hugo.Data.researchmap.profile.affiliations }}
@@ -396,7 +396,6 @@
     btnElement.style.display = 'none';
   }
 
-  // 個別のJA/EN切り替え機能
   function toggleItemLang(btn) {
     const item = btn.closest('.rm-list-item');
     if (!item) return;
